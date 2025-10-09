@@ -38,5 +38,38 @@
 <p class=KJEFooter>Information and interactive calculators are made available to you only as self-help tools for your independent use and are not intended to provide investment or tax advice. We cannot and do not guarantee their applicability or accuracy in regards to your individual circumstances. All examples are hypothetical and are for illustrative purposes. We encourage you to seek personalized advice from qualified professionals regarding all personal finance issues. </p></div>
 </div>
 </div>
+  <!-- Auto-resize the Wix iframe: put this just before </body> -->
+<script>
+(function () {
+  function pageHeight() {
+    // pick the largest relevant height
+    var b = document.body, e = document.documentElement;
+    return Math.max(
+      b.scrollHeight, e.scrollHeight,
+      b.offsetHeight, e.offsetHeight,
+      b.clientHeight, e.clientHeight
+    );
+  }
+
+  function post() {
+    window.parent.postMessage({ height: pageHeight() }, "*");
+  }
+
+  // fire on load, resize, font/image load, and DOM changes
+  window.addEventListener("load", post);
+  window.addEventListener("resize", post);
+  document.addEventListener("readystatechange", post);
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(post).observe(document.documentElement);
+  }
+  if ("MutationObserver" in window) {
+    new MutationObserver(post).observe(document.body, { childList: true, subtree: true, attributes: true });
+  }
+  // periodic safety ping (handles late CSS/fonts)
+  setTimeout(post, 150);
+  setTimeout(post, 600);
+})();
+</script>
+
 </body>
 </html>
