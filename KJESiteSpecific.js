@@ -24,18 +24,17 @@ KJE.sEmailFooter = "\n\n--------------------------------------------------------
 //My Code to change the chart colors
 // Color-blind–friendly Navy–Gold–Gray complementary palette
 KJE.gColorList = [
-  "#003f5c", // dark navy
-  "#bc5090", // magenta accent (contrasts with gold and navy)
-  "#ffa600", // vivid gold/orange (safe alternative to yellow)
-  "#7a7a7a", // neutral gray
+  "#003f5c", // deep navy
+  "#ffa600", // vivid gold/orange
+  "#2ca9bc", // sky blue accent
+  "#7a7a7a", // medium gray
   "#2f4b7c", // slate blue
   "#f6b700", // warm gold
-  "#58508d", // indigo-violet contrast
-  "#a05195", // muted purple
-  "#90be6d", // green-tan accent (visible to all types)
-  "#d8d8d8"  // light gray
+  "#58508d", // indigo contrast
+  "#90be6d", // green-tan accent
+  "#d8d8d8", // light gray
+  "#4a4a4a"  // dark neutral for subtle lines
 ];
-
 // Optional chart styling
 KJE.gColorBackground      = "#ffffff";
 KJE.gColorAxisLine        = "#555555";
