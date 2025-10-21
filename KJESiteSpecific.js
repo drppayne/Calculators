@@ -24,16 +24,17 @@ KJE.sEmailFooter = "\n\n--------------------------------------------------------
 //My Code to change the chart colors
 // Extended Navy–Gold–Gray palette
 KJE.gColorList = [
-  "#001f3f", // deep navy
   "#003366", // classic navy
-  "#004c91", // medium navy-blue
   "#d4af37", // metallic gold
-  "#e6c200", // bright gold
-  "#bfa76f", // muted gold
   "#808080", // neutral gray
+  "#bfa76f", // muted gold
+  "#2f3b4a"  // slate gray-blue
+  "#001f3f", // deep navy
+  "#004c91", // medium navy-blue
+  "#e6c200", // bright gold
   "#a9a9a9", // medium gray
   "#d3d3d3", // light gray
-  "#2f3b4a"  // slate gray-blue
+  
 ];
 
 // Optional supporting chart visuals
