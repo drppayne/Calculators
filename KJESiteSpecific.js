@@ -25,15 +25,15 @@ KJE.sEmailFooter = "\n\n--------------------------------------------------------
 // Color-blind–friendly Navy–Gold–Gray complementary palette
 KJE.gColorList = [
   "#003f5c", // deep navy
-  "#ffa600", // vivid gold/orange
-  "#2ca9bc", // sky blue accent
+  "#c47c2c", // copper accent
+  "#ffa600", // vivid gold
   "#7a7a7a", // medium gray
   "#2f4b7c", // slate blue
   "#f6b700", // warm gold
   "#58508d", // indigo contrast
   "#90be6d", // green-tan accent
   "#d8d8d8", // light gray
-  "#4a4a4a"  // dark neutral for subtle lines
+  "#4a4a4a"  // dark neutral
 ];
 // Optional chart styling
 KJE.gColorBackground      = "#ffffff";
