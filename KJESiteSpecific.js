@@ -21,6 +21,31 @@ KJE.sEmailFooter = "\n\n--------------------------------------------------------
 //KJE.gColorAxisLine        ="#666666";
 //KJE.gColorText            ="#000000";
 
+//My Code to change the chart colors
+// Extended Navy–Gold–Gray palette
+KJE.gColorList = [
+  "#001f3f", // deep navy
+  "#003366", // classic navy
+  "#004c91", // medium navy-blue
+  "#d4af37", // metallic gold
+  "#e6c200", // bright gold
+  "#bfa76f", // muted gold
+  "#808080", // neutral gray
+  "#a9a9a9", // medium gray
+  "#d3d3d3", // light gray
+  "#2f3b4a"  // slate gray-blue
+];
+
+// Optional supporting chart visuals
+KJE.gColorBackground      = "#ffffff";
+KJE.gColorAxisLine        = "#666666";
+KJE.gColorGrid            = "#dddddd";
+KJE.gColorGridBackground1 = "#ffffff";
+KJE.gColorGridBackground2 = "#f8f8f8";
+KJE.gColorText            = "#111111";
+
+
+
 // Calculator backgrounds and colors
 //KJE.gColorList            = ["#000055","#246C9D","#64A650","#FFF200","#5f007f","#F15A22","#B72467","#6DC8BF","#FF0000","#ff00ff","#ffff00","#00ffff","#7f007f","#7f0000","#007f7f","#0000ff","#00c8ff","#60ffff","#bfffbf","#ffff90","#a0c8ef"];
 //KJE.colorList             =["","#dfe0db","#DDDDDD","#CCCCCC","#CCDDCC","#CCCCDD","#DDCCCC","#CCCCDD","#CCDDCC","#CCDDDD","#CCCCDD"];
