@@ -39,15 +39,201 @@ The TVM Solver is your all-purpose financial calculator. It works in every conte
   <li><strong>What will my $300/month grow to in 10 years at 8%?</strong> → Solve for FV.</li>
 </ul></div>
 <!--CALC_TOP-->
-<noscript><div class=KJECenterText><div id=KJENoJavaScript class=KJENoJavaScript>Javascript is required for this calculator.  If you are using Internet Explorer, you may need to select to 'Allow Blocked Content' to view this calculator.
+    <form id="calculator">
+        <div class="input-group">
+            <label for="pv">PV:</label>
+            <input type="number" id="pv" step="any">
+            <span id="pv-label">per year</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="fv">FV:</label>
+            <input type="number" id="fv" step="any">
+            <span id="fv-label">per year</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="pmt">PMT:</label>
+            <input type="number" id="pmt" step="any">
+            <span id="pmt-label">per year</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="rate">Rate:</label>
+            <input type="number" id="rate" step="any">
+            <span id="rate-label">per year</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="periods">Periods:</label>
+            <input type="number" id="periods" step="1">
+            <span id="periods-label">years</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="compounding">Compounding:</label>
+            <select id="compounding">
+                <option value="1">Per Year</option>
+                <option value="12">Per Month</option>
+            </select>
+        </div>
+        
+        <button type="button" onclick="calculate()">Calculate</button>
+    </form>
+    
+    <div id="result"></div>
 
-<p>For more information about these financial calculators please visit: <A href="https://www.dinkytown.net">Financial Calculators from KJE Computer Solutions, Inc.</a></p></div></div></noscript>
-<div id="KJEAllContent"></div>
-<!--
-  Financial Calculators, &copy;1998-2024 KJE Computer Solutions, Inc.
-  For more information please see:
-  <A HREF="https://www.dinkytown.net">https://www.dinkytown.net</A>
- -->
+    <script>
+        // Update labels when compounding changes
+        document.getElementById('compounding').addEventListener('change', function() {
+            const compounding = parseInt(this.value);
+            const periodText = compounding === 12 ? 'months' : 'years';
+            const rateText = compounding === 12 ? 'per month' : 'per year';
+            
+            document.getElementById('periods-label').textContent = periodText;
+            document.getElementById('pmt-label').textContent = rateText;
+            document.getElementById('rate-label').textContent = rateText;
+            document.getElementById('pv-label').textContent = rateText;
+            document.getElementById('fv-label').textContent = rateText;
+        });
+
+        function calculate() {
+            // Get input values
+            const pvInput = document.getElementById('pv').value;
+            const fvInput = document.getElementById('fv').value;
+            const pmtInput = document.getElementById('pmt').value;
+            const rateInput = document.getElementById('rate').value;
+            const periodsInput = document.getElementById('periods').value;
+            
+            // Convert to numbers (empty strings become NaN)
+            const pv = pvInput === '' ? NaN : parseFloat(pvInput);
+            const fv = fvInput === '' ? NaN : parseFloat(fvInput);
+            const pmt = pmtInput === '' ? NaN : parseFloat(pmtInput);
+            const rate = rateInput === '' ? NaN : parseFloat(rateInput);
+            const periods = periodsInput === '' ? NaN : parseFloat(periodsInput);
+            
+            const compounding = parseInt(document.getElementById('compounding').value);
+            
+            // Count how many values are provided (not NaN)
+            const values = [pv, fv, pmt, rate, periods];
+            const providedCount = values.filter(val => !isNaN(val)).length;
+            
+            if (providedCount !== 4) {
+                document.getElementById('result').innerHTML = 
+                    '<p class="error">Please enter exactly four values (zeros are valid inputs).</p>';
+                document.getElementById('result').style.display = 'block';
+                return;
+            }
+            
+            // Convert rate to decimal
+            const r = !isNaN(rate) ? rate / 100 / compounding : 0;
+            const n = !isNaN(periods) ? periods * compounding : 0;
+            
+            let result = '';
+            
+            if (isNaN(pv)) {
+                // Calculate PV
+                const pvValue = (fv / Math.pow(1 + r, n)) - 
+                               (pmt * (1 - Math.pow(1 + r, -n)) / r);
+                result = `<p><strong>Present Value (PV):</strong> ${pvValue.toFixed(2)}</p>`;
+            } 
+            else if (isNaN(fv)) {
+                // Calculate FV
+                const fvValue = (pv * Math.pow(1 + r, n)) + 
+                               (pmt * (Math.pow(1 + r, n) - 1) / r);
+                result = `<p><strong>Future Value (FV):</strong> ${fvValue.toFixed(2)}</p>`;
+            } 
+            else if (isNaN(pmt)) {
+                // Calculate PMT
+                const pmtValue = (fv - (pv * Math.pow(1 + r, n))) / 
+                                ((Math.pow(1 + r, n) - 1) / r);
+                result = `<p><strong>Payment (PMT):</strong> ${pmtValue.toFixed(2)}</p>`;
+            } 
+            else if (isNaN(rate)) {
+                // Calculate Rate using Newton-Raphson method
+                if (pmt === 0) {
+                    const rateValue = Math.pow(fv / pv, 1/n) - 1;
+                    result = `<p><strong>Rate:</strong> ${(rateValue * 100 * compounding).toFixed(2)}% per year</p>`;
+                } else {
+                    // Numerical approximation for rate with PMT
+                    let rateGuess = 0.1; // Initial guess
+                    let found = false;
+                    
+                    for (let i = 0; i < 1000; i++) {
+                        const rTemp = rateGuess / compounding;
+                        const f = (pv * Math.pow(1 + rTemp, n)) + 
+                                 (pmt * (Math.pow(1 + rTemp, n) - 1) / rTemp) - fv;
+                        
+                        if (Math.abs(f) < 0.000001) {
+                            found = true;
+                            break;
+                        }
+                        
+                        // Derivative calculation
+                        const df = (pv * n * Math.pow(1 + rTemp, n - 1)) + 
+                                  (pmt * (Math.pow(1 + rTemp, n) - 1) / Math.pow(rTemp, 2)) -
+                                  (pmt * n * Math.pow(1 + rTemp, n - 1) / rTemp);
+                        
+                        rateGuess = rateGuess - f / df;
+                        
+                        // Prevent going negative
+                        if (rateGuess < -0.99) {
+                            rateGuess = -0.99;
+                        }
+                    }
+                    
+                    if (found) {
+                        result = `<p><strong>Rate:</strong> ${(rateGuess * 100).toFixed(2)}% per year</p>`;
+                    } else {
+                        result = '<p class="error">Could not calculate rate. Try different values.</p>';
+                    }
+                }
+            } 
+            else if (isNaN(periods)) {
+                // Calculate Periods
+                if (pmt === 0) {
+                    const nValue = Math.log(fv / pv) / Math.log(1 + r);
+                    const periodsValue = nValue / compounding;
+                    result = `<p><strong>Periods:</strong> ${periodsValue.toFixed(2)} ${compounding === 12 ? 'months' : 'years'}</p>`;
+                } else {
+                    // Numerical approximation for periods with PMT
+                    let nGuess = 10; // Initial guess
+                    let found = false;
+                    
+                    for (let i = 0; i < 1000; i++) {
+                        const f = (pv * Math.pow(1 + r, nGuess)) + 
+                                 (pmt * (Math.pow(1 + r, nGuess) - 1) / r) - fv;
+                        
+                        if (Math.abs(f) < 0.000001) {
+                            found = true;
+                            break;
+                        }
+                        
+                        // Derivative calculation
+                        const df = (pv * Math.log(1 + r) * Math.pow(1 + r, nGuess)) + 
+                                  (pmt * Math.log(1 + r) * Math.pow(1 + r, nGuess) / r);
+                        
+                        nGuess = nGuess - f / df;
+                        
+                        // Prevent negative periods
+                        if (nGuess < 0) {
+                            nGuess = 0.1;
+                        }
+                    }
+                    
+                    if (found) {
+                        const periodsValue = nGuess / compounding;
+                        result = `<p><strong>Periods:</strong> ${periodsValue.toFixed(2)} ${compounding === 12 ? 'months' : 'years'}</p>`;
+                    } else {
+                        result = '<p class="error">Could not calculate periods. Try different values.</p>';
+                    }
+                }
+            }
+            
+            document.getElementById('result').innerHTML = result;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
 
 <script type="text/javascript" SRC="KJE.js"></script>
 <script type="text/javascript" SRC="KJESiteSpecific.js"></script>
@@ -64,4 +250,5 @@ The TVM Solver is your all-purpose financial calculator. It works in every conte
 </div>
 </body>
 </html>
+
 
