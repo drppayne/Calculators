@@ -121,6 +121,7 @@ input[type="number"] {
         <h3>Instructions:</h3>
         <p>Enter any four values and leave one field blank to calculate it.</p></div>
 <hr>
+<div style="display:flex; justify-content:center;">
     <form id="calculator">
         <div class="input-group">
             <label for="pv">PV:</label>
@@ -154,6 +155,8 @@ input[type="number"] {
 
         <div id="ready-message" style="margin-top: 10px; font-weight: bold; color: #2e7d32;"></div>
 <br>
+</div>
+
 <div style="display:flex; gap:10px; margin-top:10px;">
   <div style="flex:1;">
     <button type="button" onclick="calculate()">Calculate</button>
@@ -161,7 +164,7 @@ input[type="number"] {
   <div style="flex:1;">
     <button type="button" onclick="clearInputs()">Clear</button>
   </div>
-</div>
+
     </form>
     
     <div id="result"></div>
@@ -188,7 +191,7 @@ input[type="number"] {
             <li>Calculate Rate: PV=1000, FV=2000, Payment=0, Periods=1, leave Rate blank</li>
         </ul>
     </div>
-
+</div>
     <script>
         // Function to format numbers with commas
         function formatCurrency(amount) {
