@@ -1,18 +1,16 @@
-<!doctype html>
-<html lang='en'>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Basic Financial Calculator</title>
-    <link rel='canonical' href='https://www.dinkytown.net/java/basic-financial-calculator.html' />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="shortcut icon" href="favicon.ico">
-    <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1">
-
-    <link type='text/css' rel='StyleSheet' href='KJE.css'>
-    <link type='text/css' rel='StyleSheet' href='KJESiteSpecific.css'>
-
-    <!-- Calculator-Specific Styles -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
         .input-group {
             margin-bottom: 15px;
             display: flex;
@@ -35,17 +33,19 @@
             font-weight: normal;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #0e2a52;
             color: white;
             padding: 10px 20px;
-            border: none;
+            border: 4 px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
             width: 100%;
         }
         button:hover {
-            background-color: #45a049;
+         background-color: #ffffff;
+ 	 color: #0e2a52;
+ 	 border-color: #0e2a52;
         }
         #result {
             margin-top: 20px;
@@ -80,333 +80,410 @@
         .inflow {
             color: #2e7d32;
         }
-        .ready {
-            background-color: #fff9c4;
-            border: 2px solid #ffd54f;
-            font-weight: bold;
-        }
+.ready {
+    background-color: #c8e6c9; /* Light green */
+    border: 2px solid #4caf50; /* Green border */
+    font-weight: bold;
+}
         .ready-label {
             color: #ff8f00;
             font-weight: bold;
         }
+/*get rid of arrow keys in inputs*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
     </style>
 </head>
-<body class=KJEBody>
+<body>
+    <h1>Financial Calculator</h1>
 
-<div class=KJEWrapper>
-<div class=KJEWidthConstraint>
- 
-<h1 id='KJETitleH1' class='KJEFontTitle'>Basic Financial Calculator</h1>
-<a id='KJEMainContent' title='page content'></a>
-
-<div id='KJECalculatorDescID'>This works just like a pocket financial calculator. 
-The TVM Solver is your all-purpose financial calculator. It works in every context where money moves over time: mortgages, auto loans, credit cards, student loans, savings targets, retirement income, annuities, leases, bonds, and more. Input any four values—present value, future value, interest rate, payment, or number of periods—and it computes the missing one. Master this tool and you can model virtually any scenario with confidence.
+<div>The TVM Solver is your all-purpose financial calculator. It works in every context where money moves over time: mortgages, auto loans, credit cards, student loans, savings targets, retirement income, annuities, leases, bonds, and more. Master this tool and you can model virtually any scenario with confidence.
 <br>
 <h3>Common Use Cases</h3>
 <ul>
-  <li><strong>What monthly payment fits a $25,000 car at 6.5% for 60 months?</strong> → Solve for Payment.</li>
+  <li><strong>What is the monthly payment for a $25,000 car loann at 6.5% for 5 years?</strong> → Solve for Payment.</li>
   <li><strong>How much must I invest today to have $50,000 in 5 years at 7%?</strong> → Solve for PV.</li>
   <li><strong>What return does this investment quote imply?</strong> → Solve for Rate.</li>
   <li><strong>How long until my savings reach $100,000?</strong> → Solve for Periods.</li>
   <li><strong>What will my $300/month grow to in 10 years at 8%?</strong> → Solve for FV.</li>
-</ul></div>
+</ul>
 
-<!--CALC_TOP-->
-<form id="calculator">
-    <div class="input-group">
-        <label for="pv">PV:</label>
-        <input type="number" id="pv" step="any">
-        <span class="value-label">Starting Value</span>
-    </div>
-    
-    <div class="input-group">
-        <label for="fv">FV:</label>
-        <input type="number" id="fv" step="any">
-        <span class="value-label">Ending Value</span>
-    </div>
-    
-    <div class="input-group">
-        <label for="pmt">Payment:</label>
-        <input type="number" id="pmt" step="any">
-        <span>per month</span>
-    </div>
-    
-    <div class="input-group">
-        <label for="rate">Rate:</label>
-        <input type="number" id="rate" step="any">
-        <span>per year</span>
-    </div>
-    
-    <div class="input-group">
-        <label for="periods">Periods:</label>
-        <input type="number" id="periods" step="any">
-        <span>Years</span>
-    </div>
-    
+        <h3>Instructions:</h3>
+        <p>Enter any four values and leave one field blank to calculate it.</p></div>
+<hr>
+    <form id="calculator">
+        <div class="input-group">
+            <label for="pv">PV:</label>
+            <input type="number" id="pv" step="any">
+            <span class="value-label">Starting Value</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="fv">FV:</label>
+            <input type="number" id="fv" step="any">
+            <span class="value-label">Ending Value</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="pmt">Payment:</label>
+            <input type="number" id="pmt" step="any">
+            <span class="value-label">per Month</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="rate">Rate:</label>
+            <input type="number" id="rate" step="any">
+            <span class="value-label">per Year</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="periods">Time:</label>
+            <input type="number" id="periods" step="any">
+            <span class="value-label">Years</span>
+        </div>
+
+        <div id="ready-message" style="margin-top: 10px; font-weight: bold; color: #2e7d32;"></div>
+<br>
+<div style="display:flex; gap:10px; margin-top:10px;">
+  <div style="flex:1;">
     <button type="button" onclick="calculate()">Calculate</button>
-</form>
-
-<div id="result"></div>
-
-<div class="info">
-    <h3>Instructions:</h3>
-    <p>Enter any four values and leave one field blank to calculate it.</p>
-    <p><strong>Terminology:</strong></p>
-    <ul>
-        <li><strong>PV</strong> = Present Value (starting amount)</li>
-        <li><strong>FV</strong> = Future Value (ending amount)</li>
-        <li><strong>Payment</strong> = Monthly payment amount</li>
-        <li><strong>Rate</strong> = Annual interest rate (as percentage)</li>
-        <li><strong>Periods</strong> = Number of years</li>
-    </ul>
-    <p><strong>Cash Flow Direction:</strong></p>
-    <ul>
-        <li><span class="outflow">Outflow (negative)</span>: Payment to bank or deposit to account</li>
-        <li><span class="inflow">Inflow (positive)</span>: Payment from bank or withdrawal from account</li>
-    </ul>
-    <p><strong>Examples:</strong></p>
-    <ul>
-        <li>Calculate FV: PV=1000, Rate=12, Payment=100, Periods=1, leave FV blank</li>
-        <li>Calculate Rate: PV=1000, FV=2000, Payment=0, Periods=1, leave Rate blank</li>
-    </ul>
+  </div>
+  <div style="flex:1;">
+    <button type="button" onclick="clearInputs()">Clear</button>
+  </div>
 </div>
+    </form>
+    
+    <div id="result"></div>
+    
+    <div class="info">
 
-<hr class=KJEFooterLine>
-<div class=KJECenterText><p><span class='KJEBold'><strong>StrategicMoneyMethod.com</strong></span></p><p class=KJEFooter>Information and interactive calculators are made available to you only as self-help tools for your independent use and are not intended to provide investment or tax advice. We cannot and do not guarantee their applicability or accuracy in regards to your individual circumstances. All examples are hypothetical and are for illustrative purposes. We encourage you to seek personalized advice from qualified professionals regarding all personal finance issues. </p></div>
-</div>
-</div>
+        <p><strong>Terminology:</strong></p>
+        <ul>
+            <li><strong>PV</strong> = Present Value (starting amount)</li>
+            <li><strong>FV</strong> = Future Value (ending amount)</li>
+            <li><strong>Payment</strong> = Monthly payment amount</li>
+            <li><strong>Rate</strong> = Annual interest rate (as percentage)</li>
+            <li><strong>Periods</strong> = Number of years</li>
+        </ul>
+        <p><strong>Cash Flow Direction:</strong></p>
+	<p>PMT can be positive or negative depending on the type of payment:</p>
+        <ul>
+            <li><span class="inflow">Positive Payment</span>: Payment <b>increases</b> the starting value. For example, saving up money in a bank or investment account.</li>
+            <li><span class="outflow">Negative Payment</span>: Payment <b>decreases</b> the starting value. For example, paying down a loan balance or withdrawing money from a retirement account.</li>
+        </ul>
+        <p><strong>Examples:</strong></p>
+        <ul>
+            <li>Calculate FV: PV=1000, Rate=12, Payment=100, Periods=1, leave FV blank</li>
+            <li>Calculate Rate: PV=1000, FV=2000, Payment=0, Periods=1, leave Rate blank</li>
+        </ul>
+    </div>
 
-<!-- Calculator JavaScript -->
-<script>
-    // Function to format numbers with commas
-    function formatCurrency(amount) {
-        const absAmount = Math.abs(amount);
-        return absAmount.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
+    <script>
+        // Function to format numbers with commas
+        function formatCurrency(amount) {
+            // Convert to absolute value and format with commas
+            const absAmount = Math.abs(amount);
+            return absAmount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        // Function to check and highlight ready field
+ function checkReadyField() {
+    const pvInput = document.getElementById('pv').value;
+    const fvInput = document.getElementById('fv').value;
+    const pmtInput = document.getElementById('pmt').value;
+    const rateInput = document.getElementById('rate').value;
+    const periodsInput = document.getElementById('periods').value;
+
+    const pv = pvInput === '' ? NaN : parseFloat(pvInput);
+    const fv = fvInput === '' ? NaN : parseFloat(fvInput);
+    const pmt = pmtInput === '' ? NaN : parseFloat(pmtInput);
+    const rate = rateInput === '' ? NaN : parseFloat(rateInput);
+    const periods = periodsInput === '' ? NaN : parseFloat(periodsInput);
+
+    const values = [pv, fv, pmt, rate, periods];
+    const providedCount = values.filter(val => !isNaN(val)).length;
+
+    const messageDiv = document.getElementById('ready-message');
+    
+
+if (providedCount === 4) {
+        // Show ready message
+        if (isNaN(pv)) {
+            messageDiv.textContent = 'Ready to calculate: Present Value (PV)';
+            messageDiv.style.color = '#2e7d32'; // Green
+        } else if (isNaN(fv)) {
+            messageDiv.textContent = 'Ready to calculate: Future Value (FV)';
+            messageDiv.style.color = '#2e7d32'; // Green
+        } else if (isNaN(pmt)) {
+            messageDiv.textContent = 'Ready to calculate: Payment (PMT)';
+            messageDiv.style.color = '#2e7d32'; // Green
+        } else if (isNaN(rate)) {
+            messageDiv.textContent = 'Ready to calculate: Interest Rate';
+            messageDiv.style.color = '#2e7d32'; // Green
+        } else if (isNaN(periods)) {
+            messageDiv.textContent = 'Ready to calculate: Periods';
+            messageDiv.style.color = '#2e7d32'; // Green
+        }
+    } else {
+        // Show "Not Ready" message
+        messageDiv.textContent = 'Not Ready: Please leave exactly one field blank to solve for that field.';
+        messageDiv.style.color = '#DDB500'; // Golden
+        messageDiv.style.fontWeight = 'bold';
     }
+}
 
-    // Function to check and highlight ready field
-    function checkReadyField() {
-        const pvInput = document.getElementById('pv').value;
-        const fvInput = document.getElementById('fv').value;
-        const pmtInput = document.getElementById('pmt').value;
-        const rateInput = document.getElementById('rate').value;
-        const periodsInput = document.getElementById('periods').value;
+        //Function to clear inputs
+	function clearInputs() {
+    ['pv','fv','pmt','rate','periods'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
 
-        const pv = pvInput === '' ? NaN : parseFloat(pvInput);
-        const fv = fvInput === '' ? NaN : parseFloat(fvInput);
-        const pmt = pmtInput === '' ? NaN : parseFloat(pmtInput);
-        const rate = rateInput === '' ? NaN : parseFloat(rateInput);
-        const periods = periodsInput === '' ? NaN : parseFloat(periodsInput);
+    // hide and reset result box
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '';
+    resultDiv.className = '';
+    resultDiv.style.display = 'none';
 
-        const values = [pv, fv, pmt, rate, periods];
-        const providedCount = values.filter(val => !isNaN(val)).length;
+    // refresh the helper message using your existing logic
+    checkReadyField();
+  }
 
-        document.getElementById('pv').classList.remove('ready');
-        document.getElementById('fv').classList.remove('ready');
-        document.getElementById('pmt').classList.remove('ready');
-        document.getElementById('rate').classList.remove('ready');
-        document.getElementById('periods').classList.remove('ready');
-
-        if (providedCount === 4) {
-            if (isNaN(pv)) {
-                document.getElementById('pv').classList.add('ready');
-                document.querySelector('label[for="pv"]').classList.add('ready-label');
-            } else if (isNaN(fv)) {
-                document.getElementById('fv').classList.add('ready');
-                document.querySelector('label[for="fv"]').classList.add('ready-label');
-            } else if (isNaN(pmt)) {
-                document.getElementById('pmt').classList.add('ready');
-                document.querySelector('label[for="pmt"]').classList.add('ready-label');
-            } else if (isNaN(rate)) {
-                document.getElementById('rate').classList.add('ready');
-                document.querySelector('label[for="rate"]').classList.add('ready-label');
-            } else if (isNaN(periods)) {
-                document.getElementById('periods').classList.add('ready');
-                document.querySelector('label[for="periods"]').classList.add('ready-label');
+        // Add event listeners to all inputs
+        document.getElementById('pv').addEventListener('input', checkReadyField);
+        document.getElementById('fv').addEventListener('input', checkReadyField);
+        document.getElementById('pmt').addEventListener('input', checkReadyField);
+        document.getElementById('rate').addEventListener('input', checkReadyField);
+        document.getElementById('periods').addEventListener('input', checkReadyField);
+        
+        function calculate() {
+            // Get input values
+            const pvInput = document.getElementById('pv').value;
+            const fvInput = document.getElementById('fv').value;
+            const pmtInput = document.getElementById('pmt').value;
+            const rateInput = document.getElementById('rate').value;
+            const periodsInput = document.getElementById('periods').value;
+            
+            // Convert to numbers (empty strings become NaN)
+            let pv = pvInput === '' ? NaN : parseFloat(pvInput);
+            let fv = fvInput === '' ? NaN : parseFloat(fvInput);
+            let pmt = pmtInput === '' ? NaN : parseFloat(pmtInput);
+            const rate = rateInput === '' ? NaN : parseFloat(rateInput);
+            const periods = periodsInput === '' ? NaN : parseFloat(periodsInput);
+            
+            // Count how many values are provided (not NaN)
+            const values = [pv, fv, pmt, rate, periods];
+            const providedCount = values.filter(val => !isNaN(val)).length;
+            
+            if (providedCount !== 4) {
+                showResult('Please enter exactly four values (Note: typing “0” counts as a number, and is not blank).', 'error');
+                return;
             }
-        } else {
-            document.querySelector('label[for="pv"]').classList.remove('ready-label');
-            document.querySelector('label[for="fv"]').classList.remove('ready-label');
-            document.querySelector('label[for="pmt"]').classList.remove('ready-label');
-            document.querySelector('label[for="rate"]').classList.remove('ready-label');
-            document.querySelector('label[for="periods"]').classList.remove('ready-label');
-        }
-    }
-
-    document.getElementById('pv').addEventListener('input', checkReadyField);
-    document.getElementById('fv').addEventListener('input', checkReadyField);
-    document.getElementById('pmt').addEventListener('input', checkReadyField);
-    document.getElementById('rate').addEventListener('input', checkReadyField);
-    document.getElementById('periods').addEventListener('input', checkReadyField);
-
-    function calculate() {
-        const pvInput = document.getElementById('pv').value;
-        const fvInput = document.getElementById('fv').value;
-        const pmtInput = document.getElementById('pmt').value;
-        const rateInput = document.getElementById('rate').value;
-        const periodsInput = document.getElementById('periods').value;
-
-        let pv = pvInput === '' ? NaN : parseFloat(pvInput);
-        let fv = fvInput === '' ? NaN : parseFloat(fvInput);
-        let pmt = pmtInput === '' ? NaN : parseFloat(pmtInput);
-        const rate = rateInput === '' ? NaN : parseFloat(rateInput);
-        const periods = periodsInput === '' ? NaN : parseFloat(periodsInput);
-
-        const values = [pv, fv, pmt, rate, periods];
-        const providedCount = values.filter(val => !isNaN(val)).length;
-
-        if (providedCount !== 4) {
-            showResult('Please enter exactly four values (zeros are valid inputs).', 'error');
-            return;
-        }
-
-        const r = !isNaN(rate) ? rate / 100 / 12 : 0;
-        const n = !isNaN(periods) ? periods * 12 : 0;
-
-        let result = '';
-
-        try {
-            if (isNaN(pv)) {
-                const pvValue = calculatePV(fv, pmt, r, n);
-                const formattedValue = formatCurrency(pvValue);
-                const cashflow = pvValue < 0 ? 
-                    '<div class="cashflow outflow">Outflow: Payment to bank or deposit to account</div>' : 
-                    '<div class="cashflow inflow">Inflow: Payment from bank or withdrawal from account</div>';
-                result = `<p><strong>Present Value (PV):</strong> $${formattedValue}</p>${cashflow}`;
-            } 
-            else if (isNaN(fv)) {
-                const fvValue = calculateFV(pv, pmt, r, n);
-                const formattedValue = formatCurrency(fvValue);
-                const cashflow = fvValue < 0 ? 
-                    '<div class="cashflow outflow">Outflow: Payment to bank or deposit to account</div>' : 
-                    '<div class="cashflow inflow">Inflow: Payment from bank or withdrawal from account</div>';
-                result = `<p><strong>Future Value (FV):</strong> $${formattedValue}</p>${cashflow}`;
-            } 
-            else if (isNaN(pmt)) {
-                const pmtValue = calculatePMT(pv, fv, r, n);
-                const formattedValue = formatCurrency(pmtValue);
-                const cashflow = pmtValue < 0 ? 
-                    '<div class="cashflow outflow">Outflow: Payment to bank or deposit to account</div>' : 
-                    '<div class="cashflow inflow">Inflow: Payment from bank or withdrawal from account</div>';
-                result = `<p><strong>Monthly Payment:</strong> $${formattedValue}</p>${cashflow}`;
-            } 
-            else if (isNaN(rate)) {
-                const rateResult = calculateRate(pv, fv, pmt, n);
-                if (typeof rateResult === 'string') {
-                    showResult(rateResult, 'error');
-                    return;
+            
+            // Convert annual rate to monthly decimal
+            const r = !isNaN(rate) ? rate / 100 / 12 : 0;
+            // Convert years to months
+            const n = !isNaN(periods) ? periods * 12 : 0;
+            
+            let result = '';
+            
+            try {
+                if (isNaN(pv)) {
+                    // Calculate PV
+                    const pvValue = calculatePV(fv, pmt, r, n);
+                    const formattedValue = formatCurrency(pvValue);
+                   
+                    result = `<p><strong>Present Value (PV):</strong> $${formattedValue}</p>`;
+                } 
+                else if (isNaN(fv)) {
+                    // Calculate FV
+                    const fvValue = calculateFV(pv, pmt, r, n);
+                    const formattedValue = formatCurrency(fvValue);
+                    
+                    result = `<p><strong>Future Value (FV):</strong> $${formattedValue}</p>`;
+                } 
+                else if (isNaN(pmt)) {
+                    // Calculate PMT
+                    const pmtValue = calculatePMT(pv, fv, r, n);
+                    const formattedValue = formatCurrency(pmtValue);
+                    result = `<p><strong>Monthly Payment:</strong> $${formattedValue}</p>`;
+                } 
+                else if (isNaN(rate)) {
+                    // Calculate Rate
+                    const rateResult = calculateRate(pv, fv, pmt, n);
+                    if (typeof rateResult === 'string') {
+                        showResult(rateResult, 'error');
+                        return;
+                    }
+                    // Convert monthly rate back to annual
+                    const annualRate = rateResult * 12 * 100;
+                    result = `<p><strong>Interest Rate:</strong> ${annualRate.toFixed(2)}% per year</p>`;
+                } 
+                else if (isNaN(periods)) {
+                    // Calculate Periods
+                    const periodResult = calculatePeriods(pv, fv, pmt, r);
+                    if (typeof periodResult === 'string') {
+                        showResult(periodResult, 'error');
+                        return;
+                    }
+                    // Convert months back to years
+                    const years = periodResult / 12;
+                    result = `<p><strong>Years:</strong> ${years.toFixed(2)}</p>`;
                 }
-                const annualRate = rateResult * 12 * 100;
-                result = `<p><strong>Annual Rate:</strong> ${annualRate.toFixed(2)}%</p>`;
-            } 
-            else if (isNaN(periods)) {
-                const periodResult = calculatePeriods(pv, fv, pmt, r);
-                if (typeof periodResult === 'string') {
-                    showResult(periodResult, 'error');
-                    return;
-                }
-                const years = periodResult / 12;
-                result = `<p><strong>Years:</strong> ${years.toFixed(2)}</p>`;
+                
+                showResult(result, 'success');
+            } catch (e) {
+                showResult('Calculation error: ' + e.message, 'error');
             }
-
-            showResult(result, 'success');
-        } catch (e) {
-            showResult('Calculation error: ' + e.message, 'error');
+            
+            // Reset highlighting after calculation
+            checkReadyField();
         }
-
-        checkReadyField();
-    }
-
-    function calculatePV(fv, pmt, r, n) {
-        if (Math.abs(r) < 1e-10) return fv - pmt * n;
-        const factor = Math.pow(1 + r, n);
-        return fv / factor - pmt * (1 - 1/factor) / r;
-    }
-
-    function calculateFV(pv, pmt, r, n) {
-        if (Math.abs(r) < 1e-10) return pv + pmt * n;
-        const factor = Math.pow(1 + r, n);
-        return pv * factor + pmt * (factor - 1) / r;
-    }
-
-    function calculatePMT(pv, fv, r, n) {
-        if (Math.abs(r) < 1e-10) return (fv - pv) / n;
-        const factor = Math.pow(1 + r, n);
-        return (fv - pv * factor) / ((factor - 1) / r);
-    }
-
-    function calculateRate(pv, fv, pmt, n) {
-        if (pmt === 0) {
-            if (pv === 0) return "Cannot calculate rate when PV is zero and Payment is zero.";
-            if ((fv/pv) <= 0) return "Invalid values for rate calculation.";
-            return Math.pow(Math.abs(fv / pv), 1/n) - 1;
+        
+        function calculatePV(fv, pmt, r, n) {
+            // PV = FV/(1+r)^n - PMT * [1 - (1+r)^-n]/r
+            if (Math.abs(r) < 1e-10) {
+                // Handle case when r ≈ 0
+                return fv - pmt * n;
+            }
+            const factor = Math.pow(1 + r, n);
+            return fv / factor - pmt * (1 - 1/factor) / r;
         }
-
-        let rateGuess = 0.003333;
-        const tolerance = 1e-12;
-        const maxIterations = 10000;
-
-        for (let i = 0; i < maxIterations; i++) {
-            const f = calculateFV(pv, pmt, rateGuess, n) - fv;
-            if (Math.abs(f) < tolerance) return rateGuess;
-
-            const dr = Math.max(1e-12, rateGuess * 1e-6);
-            const f2 = calculateFV(pv, pmt, rateGuess + dr, n) - fv;
-            const df = (f2 - f) / dr;
-
-            if (Math.abs(df) < tolerance) return "Cannot calculate rate. Try different values.";
-
-            const newRateGuess = rateGuess - f / df;
-            if (newRateGuess < -0.99) rateGuess = -0.99;
-            else if (newRateGuess > 10) rateGuess = 10;
-            else rateGuess = newRateGuess;
+        
+        function calculateFV(pv, pmt, r, n) {
+            // FV = PV*(1+r)^n + PMT * [(1+r)^n - 1]/r
+            if (Math.abs(r) < 1e-10) {
+                // Handle case when r ≈ 0
+                return pv + pmt * n;
+            }
+            const factor = Math.pow(1 + r, n);
+            return pv * factor + pmt * (factor - 1) / r;
         }
-
-        return "Rate calculation did not converge. Try different values.";
-    }
-
-    function calculatePeriods(pv, fv, pmt, r) {
-        if (pmt === 0) {
-            if (pv === 0) return "Cannot calculate periods when PV is zero and Payment is zero.";
-            if ((fv/pv) <= 0 || (1 + r) <= 0) return "Invalid values for period calculation.";
-            return Math.log(Math.abs(fv / pv)) / Math.log(1 + r);
+        
+        function calculatePMT(pv, fv, r, n) {
+            // PMT = [FV - PV*(1+r)^n] / [((1+r)^n - 1)/r]
+            if (Math.abs(r) < 1e-10) {
+                // Handle case when r ≈ 0
+                return (fv - pv) / n;
+            }
+            const factor = Math.pow(1 + r, n);
+            return (fv - pv * factor) / ((factor - 1) / r);
         }
+        
+function calculateRate(pv, fv, pmt, n) {
+  if (n <= 0) return "Invalid number of periods.";
 
-        let nGuess = 144;
-        const tolerance = 1e-9;
-        const maxIterations = 10000;
+  // Special case when PMT = 0 (your original behavior)
+  if (pmt === 0) {
+    if (pv === 0) return "Cannot calculate rate when PV is zero and Payment is zero.";
+    if ((fv / pv) <= 0) return "Invalid values for rate calculation.";
+    return Math.pow(Math.abs(fv / pv), 1 / n) - 1; // monthly rate
+  }
 
-        for (let i = 0; i < maxIterations; i++) {
-            const f = calculateFV(pv, pmt, r, nGuess) - fv;
-            if (Math.abs(f) < tolerance) return nGuess;
+  // FV for a given monthly rate r, computed safely
+  function fvOf(r) {
+    if (Math.abs(r) < 1e-10) {
+      // near zero-rate limit
+      return pv + pmt * n;
+    }
+    // compute (1+r)^n safely
+    const factor = Math.pow(1 + r, n);
+    if (!isFinite(factor)) return Number.POSITIVE_INFINITY;
+    return pv * factor + pmt * (factor - 1) / r;
+  }
 
-            const dn = Math.max(1e-6, nGuess * 1e-6);
-            const f2 = calculateFV(pv, pmt, r, nGuess + dn) - fv;
-            const df = (f2 - f) / dn;
+  // Bracket realistically: [-99%/mo, +100%/mo] to avoid overflow
+  let low = -0.99, high = 1.0;
+  let fLow = fvOf(low) - fv;
+  let fHigh = fvOf(high) - fv;
 
-            if (Math.abs(df) < tolerance) return "Cannot calculate periods. Try different values.";
+  // If we failed to bracket, inputs are inconsistent for a single-rate solution
+  if (fLow * fHigh > 0) return "Rate out of range for given inputs.";
 
-            const newNGuess = nGuess - f / df;
-            if (newNGuess < 0.1) nGuess = 0.1;
-            else if (newNGuess > 10000) return "Period calculation resulted in extremely large value.";
-            else nGuess = newNGuess;
+  // Bisection on monotonic FV(r)
+  const maxIterations = 200;
+  const valueTol = 1e-6;     // FV tolerance
+  for (let i = 0; i < maxIterations; i++) {
+    const mid = (low + high) / 2;
+    const fMid = fvOf(mid) - fv;
+
+    if (Math.abs(fMid) < valueTol) return mid; // monthly rate
+
+    // keep the root bracketed
+    if (fLow * fMid <= 0) {
+      high = mid; fHigh = fMid;
+    } else {
+      low = mid;  fLow  = fMid;
+    }
+  }
+  // Return best estimate if tolerance not hit
+  return (low + high) / 2;
+}
+
+        
+        function calculatePeriods(pv, fv, pmt, r) {
+            // Special case for simple interest when pmt=0
+            if (pmt === 0) {
+                if (pv === 0) return "Cannot calculate periods when PV is zero and Payment is zero.";
+                if ((fv/pv) <= 0 || (1 + r) <= 0) return "Invalid values for period calculation.";
+                return Math.log(Math.abs(fv / pv)) / Math.log(1 + r);
+            }
+            
+            // Newton-Raphson method for periods calculation
+            let nGuess = 144; // Start with 144 months for 12 years
+            const tolerance = 1e-9;
+            const maxIterations = 10000;
+            
+            for (let i = 0; i < maxIterations; i++) {
+                const f = calculateFV(pv, pmt, r, nGuess) - fv;
+                
+                if (Math.abs(f) < tolerance) {
+                    return nGuess;
+                }
+                
+                // Numerical derivative
+                const dn = Math.max(1e-6, nGuess * 1e-6);
+                const f2 = calculateFV(pv, pmt, r, nGuess + dn) - fv;
+                const df = (f2 - f) / dn;
+                
+                if (Math.abs(df) < tolerance) {
+                    return "Cannot calculate periods. Try different values.";
+                }
+                
+                const newNGuess = nGuess - f / df;
+                
+                // Prevent negative periods
+                if (newNGuess < 0.1) nGuess = 0.1;
+                else if (newNGuess > 10000) return "Period calculation resulted in extremely large value.";
+                else nGuess = newNGuess;
+            }
+            
+            return "Period calculation did not converge. Try different values.";
         }
-
-        return "Period calculation did not converge. Try different values.";
-    }
-
-    function showResult(message, type) {
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = message;
-        resultDiv.className = type;
-        resultDiv.style.display = 'block';
-    }
-
-    window.addEventListener('load', checkReadyField);
-</script>
-
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = type;
+            resultDiv.style.display = 'block';
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', checkReadyField);
+    </script>
 </body>
 </html>
