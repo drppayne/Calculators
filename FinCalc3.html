@@ -12,11 +12,32 @@
     padding: 20px;
   }
 
+/* Base styles */
+.input-group {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.input-group input {
+  width: 7rem;
+}
+
+/* Mobile overrides */
+@media (max-width: 480px) {
   .input-group {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
+
+  .input-group input {
+    width: 6rem;
+  }
+
+  .value-label {
+    display: block;
+  }
+}
+
 
   label {
     display: inline-block;
@@ -540,3 +561,4 @@ function calculateRate(pv, fv, pmt, n) {
     </script>
 </body>
 </html>
+
