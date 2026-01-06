@@ -147,10 +147,17 @@
     justify-content: center;
   }
 
+.lower-inner {
+  width: 80%;
+  overflow-y: auto;
+}
+
+@media (max-width: 480px) {
   .lower-inner {
-    width: 80%;
-    overflow-y: auto;
+    width: 95%;
   }
+}
+
 
   #calculator,
   #result,
@@ -561,4 +568,5 @@ function calculateRate(pv, fv, pmt, n) {
     </script>
 </body>
 </html>
+
 
