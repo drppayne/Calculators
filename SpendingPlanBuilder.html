@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spending Plan Builder — Strategic Money Method</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f4f8;
+      color: #1e293b;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .container { max-width: 680px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 28px; }
+    header h1 { font-size: 1.75rem; font-weight: 700; color: #1e3a5f; margin-bottom: 6px; }
+    header p { color: #64748b; font-size: 0.95rem; }
+
+    /* Income card */
+    .income-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .income-card label {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #1e3a5f;
+      white-space: nowrap;
+    }
+
+    .income-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .income-input-wrap span { font-size: 1.25rem; color: #64748b; }
+
+    .income-input {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      width: 180px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .income-input:focus { border-color: #3b82f6; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: white;
+      border-radius: 0;
+      padding: 8px 8px 0;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+      margin-top: 16px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      background: transparent;
+      border-radius: 8px 8px 0 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn:hover { color: #1e3a5f; background: #f8fafc; }
+
+    .tab-btn.active {
+      color: #1e3a5f;
+      border-bottom-color: #3b82f6;
+      background: #f0f6ff;
+    }
+
+    /* Tab panels */
+    .tab-panel {
+      display: none;
+      background: white;
+      border-radius: 0 0 12px 12px;
+      padding: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .tab-panel.active { display: block; }
+
+    /* Plan description */
+    .plan-desc {
+      background: #f0f6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      color: #374151;
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+
+    /* Allocation bar */
+    .alloc-bar {
+      height: 40px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 20px;
+      background: #e2e8f0;
+    }
+
+    .alloc-segment {
+      height: 100%;
+      transition: width 0.35s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: white;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* Breakdown rows */
+    .breakdown { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+    .bucket {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .bucket-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+
+    .bucket-info { flex: 1; }
+    .bucket-label { font-weight: 600; font-size: 0.95rem; color: #1e293b; }
+    .bucket-sublabel { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+
+    .bucket-pct { display: flex; align-items: center; gap: 4px; }
+
+    .pct-input {
+      width: 52px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .pct-input:focus { border-color: #3b82f6; }
+
+    .pct-symbol { font-size: 0.85rem; color: #64748b; }
+
+    .bucket-amount {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      min-width: 90px;
+      text-align: right;
+    }
+
+    /* Validation warning */
+    .pct-warning {
+      font-size: 0.82rem;
+      color: #dc2626;
+      text-align: center;
+      margin-top: -4px;
+      margin-bottom: 10px;
+      display: none;
+      padding: 6px;
+      background: #fef2f2;
+      border-radius: 6px;
+    }
+
+    /* 80/20 sub-breakdown */
+    .sub-breakdown {
+      margin-top: -4px;
+      padding: 12px 16px;
+      background: #f0fdf4;
+      border-radius: 0 0 10px 10px;
+      border: 1px solid #86efac;
+      border-top: none;
+    }
+
+    .sub-breakdown-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #166534;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sub-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: #166534;
+      padding: 3px 0;
+    }
+
+    /* Tab actions */
+    .tab-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .reset-btn {
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover { background: #f8fafc; color: #1e3a5f; border-color: #cbd5e1; }
+
+    .print-btn {
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .print-btn:hover { background: #2d5282; }
+
+    /* Zero-based worksheet */
+    .zb-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+
+    .zb-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 8px;
+    }
+
+    .zb-section-total { margin-left: auto; font-size: 0.85rem; }
+
+    .zb-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 4px;
+    }
+
+    .zb-label { flex: 1; font-size: 0.88rem; color: #374151; }
+
+    .zb-input {
+      width: 120px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.2s;
+      color: #1e293b;
+    }
+
+    .zb-input:focus { border-color: #3b82f6; }
+
+    .zb-remaining {
+      border-top: 2px solid #e2e8f0;
+      padding-top: 16px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .zb-remaining-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.92rem;
+    }
+
+    .zb-remaining-label { font-weight: 600; color: #374151; }
+
+    .zb-remaining-amount {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .zb-remaining-amount.zero   { color: #22c55e; }
+    .zb-remaining-amount.over   { color: #f97316; }
+    .zb-remaining-amount.under  { color: #dc2626; }
+
+    .zb-status {
+      font-size: 0.82rem;
+      color: #64748b;
+      text-align: center;
+      margin-top: 8px;
+      padding: 8px;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      padding-top: 4px;
+    }
+
+    footer strong { color: #64748b; }
+
+    /* Print */
+    @media print {
+      body { background: white; padding: 0; }
+      .tab-btn:not(.active) { display: none; }
+      .tab-panel { box-shadow: none; display: block !important; margin-bottom: 40px; }
+      .tab-actions { display: none; }
+      .income-card { box-shadow: none; border: 1px solid #e2e8f0; }
+      .tabs { box-shadow: none; border-bottom: 1px solid #e2e8f0; }
+    }
+
+    @media (max-width: 480px) {
+      .tab-btn { font-size: 0.75rem; padding: 8px 4px; }
+      .bucket-amount { min-width: 76px; font-size: 1rem; }
+      .income-input { width: 140px; font-size: 1.2rem; }
+      .bucket { flex-wrap: wrap; }
+      .bucket-amount { width: 100%; text-align: left; padding-left: 26px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Spending Plan Builder</h1>
+    <p>Enter your income, choose a framework, and see your plan take shape.</p>
+  </header>
+
+  <div class="income-card">
+    <label for="monthlyIncome">Monthly Net Income</label>
+    <div class="income-input-wrap">
+      <span>$</span>
+      <input id="monthlyIncome" class="income-input" type="number" min="0" step="100" value="5000" inputmode="numeric">
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="plan5020">Fixed Expense Plan</button>
+    <button class="tab-btn" data-tab="plan8020">Savings Focus Plan</button>
+    <button class="tab-btn" data-tab="zerobased">Zero-Based Plan</button>
+  </div>
+
+  <!-- TAB: 50/20/30 -->
+  <div id="plan5020" class="tab-panel active">
+    <div class="plan-desc">
+      <strong>Fixed-Expenses Focus:</strong> Lock in your fixed costs first. If fixed expenses eat up too much of your income, everything else — your goals, your flexibility, your fun — gets squeezed out. Adjust the percentages to fit your season of life.
+    </div>
+
+    <div class="alloc-bar">
+      <div class="alloc-segment" style="background:#3b82f6; width:50%" id="seg-fixed">Fixed 50%</div>
+      <div class="alloc-segment" style="background:#22c55e; width:20%" id="seg-goals">Goals 20%</div>
+      <div class="alloc-segment" style="background:#f97316; width:30%" id="seg-wants">Wants 30%</div>
+    </div>
+
+    <div class="breakdown">
+      <div class="bucket">
+        <div class="bucket-dot" style="background:#3b82f6"></div>
+        <div class="bucket-info">
+          <div class="bucket-label">Fixed Needs</div>
+          <div class="bucket-sublabel">Housing, transportation, utilities, insurance, recurring subscriptions</div>
+        </div>
+        <div class="bucket-pct">
+          <input class="pct-input" id="pct-fixed" type="number" min="0" max="100" value="50">
+          <span class="pct-symbol">%</span>
+        </div>
+        <div class="bucket-amount" id="amt-fixed">$2,500</div>
+      </div>
+
+      <div class="bucket">
+        <div class="bucket-dot" style="background:#22c55e"></div>
+        <div class="bucket-info">
+          <div class="bucket-label">Financial Goals</div>
+          <div class="bucket-sublabel">Retirement, emergency fund, debt payoff, investing</div>
+        </div>
+        <div class="bucket-pct">
+          <input class="pct-input" id="pct-goals" type="number" min="0" max="100" value="20">
+          <span class="pct-symbol">%</span>
+        </div>
+        <div class="bucket-amount" id="amt-goals">$1,000</div>
+      </div>
+
+      <div class="bucket">
+        <div class="bucket-dot" style="background:#f97316"></div>
+        <div class="bucket-info">
+          <div class="bucket-label">Discretionary Wants</div>
+          <div class="bucket-sublabel">Dining out, entertainment, travel, hobbies, personal spending</div>
+        </div>
+        <div class="bucket-pct">
+          <input class="pct-input" id="pct-wants" type="number" min="0" max="100" value="30">
+          <span class="pct-symbol">%</span>
+        </div>
+        <div class="bucket-amount" id="amt-wants">$1,500</div>
+      </div>
+    </div>
+
+    <div class="pct-warning" id="warn5020">
+      Percentages must total 100%. Currently: <span id="warn5020-sum"></span>%
+    </div>
+
+    <div class="tab-actions">
+      <button class="reset-btn" onclick="resetPlan5020()">Reset to 50 / 20 / 30</button>
+      <button class="print-btn" onclick="window.print()">Print Plan</button>
+    </div>
+  </div>
+
+  <!-- TAB: 80/20 -->
+  <div id="plan8020" class="tab-panel">
+    <div class="plan-desc">
+      <strong>Savings-First:</strong> Protect your future before anything else. Automate your savings and goals the moment your paycheck arrives — then spend the rest however you choose. No guilt, no daily budget math.
+    </div>
+
+    <div class="alloc-bar">
+      <div class="alloc-segment" style="background:#22c55e; width:20%" id="seg-8020-goals">Goals 20%</div>
+      <div class="alloc-segment" style="background:#3b82f6; width:80%" id="seg-8020-life">Life 80%</div>
+    </div>
+
+    <div class="breakdown">
+      <div class="bucket" style="border-radius:10px 10px 0 0; border-bottom:none;">
+        <div class="bucket-dot" style="background:#22c55e"></div>
+        <div class="bucket-info">
+          <div class="bucket-label">Financial Goals — First</div>
+          <div class="bucket-sublabel">Automated before bills hit. Nonnegotiable.</div>
+        </div>
+        <div class="bucket-pct">
+          <input class="pct-input" id="pct-8020-goals" type="number" min="0" max="100" value="20">
+          <span class="pct-symbol">%</span>
+        </div>
+        <div class="bucket-amount" id="amt-8020-goals">$1,000</div>
+      </div>
+
+      <div class="sub-breakdown">
+        <div class="sub-breakdown-title">Suggested goal breakdown</div>
+        <div class="sub-row"><span>Retirement (401k / IRA)</span><span id="sub-retirement">$500</span></div>
+        <div class="sub-row"><span>Short-term debt payoff</span><span id="sub-debt">$250</span></div>
+        <div class="sub-row"><span>Emergency fund / savings</span><span id="sub-emergency">$250</span></div>
+      </div>
+
+      <div class="bucket" style="margin-top:10px;">
+        <div class="bucket-dot" style="background:#3b82f6"></div>
+        <div class="bucket-info">
+          <div class="bucket-label">Everything Else</div>
+          <div class="bucket-sublabel">Housing, food, transportation, lifestyle, fun — all of it, no tracking required</div>
+        </div>
+        <div class="bucket-pct">
+          <input class="pct-input" id="pct-8020-life" type="number" min="0" max="100" value="80">
+          <span class="pct-symbol">%</span>
+        </div>
+        <div class="bucket-amount" id="amt-8020-life">$4,000</div>
+      </div>
+    </div>
+
+    <div class="pct-warning" id="warn8020">
+      Percentages must total 100%. Currently: <span id="warn8020-sum"></span>%
+    </div>
+
+    <div class="tab-actions">
+      <button class="reset-btn" onclick="resetPlan8020()">Reset to 80 / 20</button>
+      <button class="print-btn" onclick="window.print()">Print Plan</button>
+    </div>
+  </div>
+
+  <!-- TAB: Zero-Based -->
+  <div id="zerobased" class="tab-panel">
+    <div class="plan-desc">
+      <strong>Dollar Focus (Zero-Based):</strong> Every dollar gets a job. Assign amounts to each category until nothing is left unassigned. Best paired with a 50/20/30 or 80/20 framework for the big-picture split.
+    </div>
+
+    <div class="zb-grid">
+
+      <div class="zb-section-header">
+        <div style="width:12px;height:12px;border-radius:50%;background:#22c55e;flex-shrink:0"></div>
+        Financial Goals
+        <div class="zb-section-total" style="color:#22c55e" id="zb-total-goals">$0</div>
+      </div>
+      <div class="zb-row"><span class="zb-label">Retirement savings (401k / IRA)</span><input class="zb-input zb-goals" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Emergency fund</span><input class="zb-input zb-goals" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Debt payoff</span><input class="zb-input zb-goals" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Other savings goal</span><input class="zb-input zb-goals" type="number" min="0" value="" placeholder="0"></div>
+
+      <div class="zb-section-header" style="margin-top:4px;">
+        <div style="width:12px;height:12px;border-radius:50%;background:#3b82f6;flex-shrink:0"></div>
+        Fixed Needs
+        <div class="zb-section-total" style="color:#3b82f6" id="zb-total-fixed">$0</div>
+      </div>
+      <div class="zb-row"><span class="zb-label">Housing (rent / mortgage)</span><input class="zb-input zb-fixed" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Utilities</span><input class="zb-input zb-fixed" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Transportation (car / transit)</span><input class="zb-input zb-fixed" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Insurance</span><input class="zb-input zb-fixed" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Groceries</span><input class="zb-input zb-fixed" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Subscriptions</span><input class="zb-input zb-fixed" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Childcare / school</span><input class="zb-input zb-fixed" type="number" min="0" value="" placeholder="0"></div>
+
+      <div class="zb-section-header" style="margin-top:4px;">
+        <div style="width:12px;height:12px;border-radius:50%;background:#f97316;flex-shrink:0"></div>
+        Discretionary Wants
+        <div class="zb-section-total" style="color:#f97316" id="zb-total-wants">$0</div>
+      </div>
+      <div class="zb-row"><span class="zb-label">Dining out</span><input class="zb-input zb-wants" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Entertainment</span><input class="zb-input zb-wants" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Travel</span><input class="zb-input zb-wants" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Hobbies</span><input class="zb-input zb-wants" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Personal / self-care</span><input class="zb-input zb-wants" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Gifts</span><input class="zb-input zb-wants" type="number" min="0" value="" placeholder="0"></div>
+      <div class="zb-row"><span class="zb-label">Other</span><input class="zb-input zb-wants" type="number" min="0" value="" placeholder="0"></div>
+
+    </div>
+
+    <div class="zb-remaining">
+      <div class="zb-remaining-row">
+        <span class="zb-remaining-label">Monthly Income</span>
+        <span id="zb-income" style="font-weight:600;color:#1e3a5f;">$5,000</span>
+      </div>
+      <div class="zb-remaining-row">
+        <span class="zb-remaining-label">Total Assigned</span>
+        <span id="zb-assigned" style="color:#374151;">$0</span>
+      </div>
+      <div class="zb-remaining-row" style="margin-top:4px;">
+        <span class="zb-remaining-label" style="font-size:1rem;">Unassigned</span>
+        <span class="zb-remaining-amount over" id="zb-unassigned">$5,000 left</span>
+      </div>
+    </div>
+
+    <div class="zb-status" id="zb-status">Assign every dollar until you reach $0 unassigned.</div>
+
+    <div class="tab-actions">
+      <button class="reset-btn" onclick="resetZB()">Clear All</button>
+      <button class="print-btn" onclick="window.print()">Print Plan</button>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong>Strategic Money Method</strong></p>
+    <p>This tool is for educational purposes only and does not constitute financial advice. All calculations are estimates based on the values you enter. Consult a qualified financial professional for personalized guidance.</p>
+  </footer>
+
+</div>
+<script>
+  const incomeEl = document.getElementById('monthlyIncome');
+
+  function fmt(n) {
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+
+  // ── 50/20/30 ────────────────────────────────────────────────────────────────
+  const pctFixed = document.getElementById('pct-fixed');
+  const pctGoals = document.getElementById('pct-goals');
+  const pctWants = document.getElementById('pct-wants');
+
+  function update5020() {
+    const income = parseFloat(incomeEl.value) || 0;
+    const f = parseFloat(pctFixed.value) || 0;
+    const g = parseFloat(pctGoals.value) || 0;
+    const w = parseFloat(pctWants.value) || 0;
+    const sum = f + g + w;
+
+    const warn = document.getElementById('warn5020');
+    document.getElementById('warn5020-sum').textContent = sum;
+    warn.style.display = sum !== 100 ? 'block' : 'none';
+
+    document.getElementById('amt-fixed').textContent = fmt(income * f / 100);
+    document.getElementById('amt-goals').textContent = fmt(income * g / 100);
+    document.getElementById('amt-wants').textContent = fmt(income * w / 100);
+
+    const segFixed = document.getElementById('seg-fixed');
+    const segGoals = document.getElementById('seg-goals');
+    const segWants = document.getElementById('seg-wants');
+
+    segFixed.style.width = f + '%';
+    segFixed.textContent = f >= 10 ? 'Fixed ' + f + '%' : (f >= 5 ? f + '%' : '');
+    segGoals.style.width = g + '%';
+    segGoals.textContent = g >= 10 ? 'Goals ' + g + '%' : (g >= 5 ? g + '%' : '');
+    segWants.style.width = w + '%';
+    segWants.textContent = w >= 10 ? 'Wants ' + w + '%' : (w >= 5 ? w + '%' : '');
+  }
+
+  function resetPlan5020() {
+    pctFixed.value = 50; pctGoals.value = 20; pctWants.value = 30;
+    update5020();
+  }
+
+  [pctFixed, pctGoals, pctWants].forEach(el => el.addEventListener('input', update5020));
+
+  // ── 80/20 ───────────────────────────────────────────────────────────────────
+  const pct8020Goals = document.getElementById('pct-8020-goals');
+  const pct8020Life  = document.getElementById('pct-8020-life');
+
+  function update8020() {
+    const income = parseFloat(incomeEl.value) || 0;
+    const g = parseFloat(pct8020Goals.value) || 0;
+    const l = parseFloat(pct8020Life.value) || 0;
+    const sum = g + l;
+
+    const warn = document.getElementById('warn8020');
+    document.getElementById('warn8020-sum').textContent = sum;
+    warn.style.display = sum !== 100 ? 'block' : 'none';
+
+    const goalAmt = income * g / 100;
+    document.getElementById('amt-8020-goals').textContent = fmt(goalAmt);
+    document.getElementById('amt-8020-life').textContent  = fmt(income * l / 100);
+
+    // Suggested sub-breakdown: 50% retirement, 25% debt, 25% emergency
+    document.getElementById('sub-retirement').textContent = fmt(goalAmt * 0.5);
+    document.getElementById('sub-debt').textContent       = fmt(goalAmt * 0.25);
+    document.getElementById('sub-emergency').textContent  = fmt(goalAmt * 0.25);
+
+    const segG = document.getElementById('seg-8020-goals');
+    const segL = document.getElementById('seg-8020-life');
+    segG.style.width = g + '%';
+    segG.textContent = g >= 10 ? 'Goals ' + g + '%' : (g >= 5 ? g + '%' : '');
+    segL.style.width = l + '%';
+    segL.textContent = l >= 10 ? 'Life ' + l + '%' : (l >= 5 ? l + '%' : '');
+  }
+
+  function resetPlan8020() {
+    pct8020Goals.value = 20; pct8020Life.value = 80;
+    update8020();
+  }
+
+  [pct8020Goals, pct8020Life].forEach(el => el.addEventListener('input', update8020));
+
+  // ── Zero-Based ──────────────────────────────────────────────────────────────
+  function sumInputs(selector) {
+    let total = 0;
+    document.querySelectorAll(selector).forEach(el => total += parseFloat(el.value) || 0);
+    return total;
+  }
+
+  function updateZB() {
+    const income = parseFloat(incomeEl.value) || 0;
+    document.getElementById('zb-income').textContent = fmt(income);
+
+    const goalTotal  = sumInputs('.zb-goals');
+    const fixedTotal = sumInputs('.zb-fixed');
+    const wantsTotal = sumInputs('.zb-wants');
+
+    document.getElementById('zb-total-goals').textContent = fmt(goalTotal);
+    document.getElementById('zb-total-fixed').textContent = fmt(fixedTotal);
+    document.getElementById('zb-total-wants').textContent = fmt(wantsTotal);
+
+    const assigned  = goalTotal + fixedTotal + wantsTotal;
+    const remaining = income - assigned;
+
+    document.getElementById('zb-assigned').textContent = fmt(assigned);
+
+    const remEl    = document.getElementById('zb-unassigned');
+    const statusEl = document.getElementById('zb-status');
+
+    if (Math.abs(remaining) < 0.5) {
+      remEl.className = 'zb-remaining-amount zero';
+      remEl.textContent = '$0';
+      statusEl.textContent = '✓ Every dollar has a job. Your plan is complete.';
+    } else if (remaining > 0) {
+      remEl.className = 'zb-remaining-amount over';
+      remEl.textContent = fmt(remaining) + ' left to assign';
+      statusEl.textContent = 'Keep assigning until you reach $0.';
+    } else {
+      remEl.className = 'zb-remaining-amount under';
+      remEl.textContent = fmt(Math.abs(remaining)) + ' over budget';
+      statusEl.textContent = 'You\'ve assigned more than your income. Trim some categories.';
+    }
+  }
+
+  function resetZB() {
+    document.querySelectorAll('.zb-input').forEach(el => el.value = '');
+    updateZB();
+  }
+
+  document.querySelectorAll('.zb-input').forEach(el => el.addEventListener('input', updateZB));
+
+  // ── Shared income listener ──────────────────────────────────────────────────
+  incomeEl.addEventListener('input', () => { update5020(); update8020(); updateZB(); });
+
+  // ── Tabs ────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ── Init ────────────────────────────────────────────────────────────────────
+  update5020();
+  update8020();
+  updateZB();
+</script>
+</body>
+</html>
